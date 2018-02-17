@@ -267,6 +267,7 @@ public class FeedbackNumericalScaleQuestionDetails extends
 
         populateSummaryStatisticsFromResponses(responses, min, max, average, averageExcludingSelf, total,
                                                totalExcludingSelf, numResponses, numResponsesExcludingSelf);
+
         boolean showAvgExcludingSelf = showAverageExcludingSelf(question, averageExcludingSelf);
 
         String fragmentTemplateToUse = showAvgExcludingSelf
@@ -307,7 +308,6 @@ public class FeedbackNumericalScaleQuestionDetails extends
 
         StringBuilder fragmentHtml = new StringBuilder();
         for (String recipient : recipientList) {
-
             // hidden recipients do not appear in the summary table, so ignore responses with hidden recipients
             boolean isHiddenRecipient = false;
             if (hiddenRecipients.contains(recipient)) {
@@ -599,7 +599,11 @@ public class FeedbackNumericalScaleQuestionDetails extends
             FeedbackSessionResultsBundle bundle) {
         List<String> hiddenRecipients = new ArrayList<>(); // List of recipients to hide
         FeedbackParticipantType type = question.recipientType;
+
         for (FeedbackResponseAttributes response : responses) {
+            if (!bundle.visibilityTable.containsKey(response.getId())) {
+                continue;
+            }
             if (!bundle.visibilityTable.get(response.getId())[1]
                     && type != FeedbackParticipantType.SELF
                     && type != FeedbackParticipantType.NONE) {
